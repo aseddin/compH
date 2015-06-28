@@ -8,22 +8,26 @@ int main(int argc, string argv[])
 {
     //Input name
     string name = GetString();
-   
 
     //make sure name is not empty
     if (strlen(name) > 0)
     {
-        printf("%c", toupper(name[0]));
-        int c = 1;
-        do
+        bool white_space_flag = true;
+        int c = 0;
+        while(c < strlen(name))
         {
-            if(name[c] == ' ')
+            if(isblank(name[c]))
             {
-                printf("%c", toupper(name[c+1]));
+                white_space_flag = true;
+            }
+            else if(white_space_flag)
+            {
+                white_space_flag = false;
+                printf("%c", toupper(name[c]));
             }
             c++;
-        }while(c < strlen(name));
 
+        }
         //print the final new line
         printf("\n");
 
