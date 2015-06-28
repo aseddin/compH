@@ -4,37 +4,28 @@
 /*Print half-pyramid with a a variable height based on user input */
 
 int get_height(void);
-
+void print_block(char character, int block_size);
 
 int main(void)
 {
-    
-    int pyramid_height, i, whites, hashes;
+    int pyramid_height;
 
     //Solicit the user intput for the positive pyramid height
     pyramid_height = get_height();
 
-
-    for (i = 1; i <= pyramid_height; i++)
+    for (int i = 1; i <= pyramid_height; i++)
     {
-        //Generate a pyramid row
-        //
-        //print white spaces
-        for (whites = pyramid_height - i; whites > 0; whites--)
-        {
-            printf(" ");
-        }
+        //Generate a pyramid row (both sides and white spaces in between)
 
-        //print the pyramid hashes
-        for (hashes = 0 ; hashes <= i; hashes++)
-        {
-            printf("#");
-        }
+        print_block(' ', pyramid_height - i);
+        print_block('#', i);
+        print_block(' ', 2);
+        print_block('#', i);
+        print_block(' ', pyramid_height - i);
         
         //new pyramid row
         printf("\n");
     }
-
     return 0;
 }
 
@@ -53,4 +44,9 @@ int get_height(void)
     return height;
 }
 
-
+//print a character "block_size" times
+void print_block(char character, int block_size)
+{
+    for(int i = 0; i < block_size; i++)
+        printf("%c", character);
+}
