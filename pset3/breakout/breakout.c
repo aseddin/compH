@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 // Stanford Portable Library
 #include <spl/gevents.h>
@@ -75,9 +76,7 @@ int main(void)
     int points = 0;
 
     // x and y ball velocity
-    int maxVelocity = 3;
-    int minVelocity = -3;
-    int xVelocity = ((maxVelocity - minVelocity) * drand48() + minVelocity) ;
+    int xVelocity = round((2 * drand48() - 1) * 2);
     int yVelocity = 2;
 
     // keep playing until game over
