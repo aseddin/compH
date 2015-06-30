@@ -11,8 +11,9 @@
 
 #include "helpers.h"
 
-void selection_sort(int values[], int n);
 void sort(int values[], int n);
+bool search(int value, int values[], int n);
+void selection_sort(int values[], int n);
 void bubble_sort(int values[], int n);
 bool binary_search(int value, int values[], int low, int high);
 
