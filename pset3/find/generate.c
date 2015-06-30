@@ -24,17 +24,17 @@
 
 int main(int argc, string argv[])
 {
-    // TODO: comment me
+    // Verify that the number of passed arguments is 1 or 2
     if (argc != 2 && argc != 3)
     {
         printf("Usage: generate n [s]\n");
         return 1;
     }
 
-    // TODO: comment me
+    // Get the number of pseudorandom numbers to generate
     int n = atoi(argv[1]);
 
-    // TODO: comment me
+    // Get the seed number for the optional argument (if used)
     if (argc == 3)
     {
         srand48((long int) atoi(argv[2]));
@@ -44,7 +44,7 @@ int main(int argc, string argv[])
         srand48((long int) time(NULL));
     }
 
-    // TODO: comment me
+    // Print the pseudorandom numbers on separate lines
     for (int i = 0; i < n; i++)
     {
         printf("%i\n", (int) (drand48() * LIMIT));
