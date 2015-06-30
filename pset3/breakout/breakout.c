@@ -74,12 +74,52 @@ int main(void)
     // number of points initially
     int points = 0;
 
+    // x and y ball velocity
+    int maxVelocity = 3;
+    int minVelocity = -3;
+    int xVelocity = ((maxVelocity - minVelocity) * drand48() + minVelocity) ;
+    int yVelocity = 2;
+
     // keep playing until game over
     while (lives > 0 && bricks > 0)
     {
         // TODO
+        
+        // move the ball
+        move(ball, xVelocity, yVelocity);
+
+        
+        // Bounce the ball off the window edges
+        // Get (x, y) of the ball
+        int xBall = getX(ball);
+        int yBall = getY(ball);
+
+        // Bounce off Vertical edges of window
+        if ((xBall + 2 * RADIUS >= WIDTH) || (xBall <= 0))
+            xVelocity *= -1;
+        // Bound off Horizontal edges 
+        if ((yBall + 2 * RADIUS >= HEIGHT) || (yBall <= 0))
+            yVelocity *= -1;
+
+        // detect collision with paddle or a brick
+        GObject object = detectCollision(window, ball);
+        if (object != NULL) 
+        {
+            // collision with the paddle
+            if (object == paddle)
+                yVelocity *= -1;
+            
+            // collision  with a brick
+            else if (strcmp(getType(object), "GRect") == 0)
+            {
+                yVelocity *= -1;
+                removeGWindow(window, object);
+                bricks --;
+            }
+        }   
+        pause(10);
         // wait for event
-        GEvent event = waitForEvent(ANY_EVENT);
+        GMouseEvent event = getNextEvent(MOUSE_EVENT);
                             
         // if we heard one
         if (event != NULL)
@@ -98,7 +138,7 @@ int main(void)
                 setLocation(paddle, x, y);
             }
         }   
-       
+
     }
 
     // wait for click before exiting
