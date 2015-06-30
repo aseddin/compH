@@ -76,67 +76,91 @@ int main(void)
     int points = 0;
 
     // x and y ball velocity
-    int xVelocity = round((2 * drand48() - 1) * 2);
-    int yVelocity = 2;
+    int initial_velocity = 3;
+    int xVelocity = round((2 * drand48() - 1) * initial_velocity);
+    int yVelocity = initial_velocity;
 
+    // Pause the game till a mouse a click
+    bool game_paused = true;
+    
     // keep playing until game over
     while (lives > 0 && bricks > 0)
     {
-        // TODO
-        
-        // move the ball
-        move(ball, xVelocity, yVelocity);
+        // check for an indication to start the game
+        GEvent click_to_start = getNextEvent(MOUSE_EVENT); 
 
-        
-        // Bounce the ball off the window edges
-        // Get (x, y) of the ball
-        int xBall = getX(ball);
-        int yBall = getY(ball);
+        // start game when mouse is clicked
+        if (click_to_start != NULL)
+            if (getEventType(click_to_start) == MOUSE_CLICKED)
+                game_paused = false;
 
-        // Bounce off Vertical edges of window
-        if ((xBall + 2 * RADIUS >= WIDTH) || (xBall <= 0))
-            xVelocity *= -1;
-        // Bound off Horizontal edges 
-        if ((yBall + 2 * RADIUS >= HEIGHT) || (yBall <= 0))
-            yVelocity *= -1;
-
-        // detect collision with paddle or a brick
-        GObject object = detectCollision(window, ball);
-        if (object != NULL) 
+        if (!game_paused)
         {
-            // collision with the paddle
-            if (object == paddle)
-                yVelocity *= -1;
-            
-            // collision  with a brick
-            else if (strcmp(getType(object), "GRect") == 0)
-            {
-                yVelocity *= -1;
-                removeGWindow(window, object);
-                bricks --;
-            }
-        }   
-        pause(10);
-        // wait for event
-        GMouseEvent event = getNextEvent(MOUSE_EVENT);
-                            
-        // if we heard one
-        if (event != NULL)
-        {
-            // Control the paddle movement with the mouse
-            if (getEventType(event) == MOUSE_MOVED)
-            {
-                double x = (getX(event) - PADDLE_WIDTH / 2) ;
-                double y = getY(paddle) ;
+            // move the ball
+            move(ball, xVelocity, yVelocity);
 
-                // Restrict the paddle movement to the game window
-                if (x + PADDLE_WIDTH > WIDTH)
-                    x = WIDTH - PADDLE_WIDTH;
-                else if (x < 0)
-                    x = 0;
-                setLocation(paddle, x, y);
+            // Bounce the ball 
+            // Get (x, y) of the ball
+            int xBall = getX(ball);
+            int yBall = getY(ball);
+
+            // Bounce off Vertical edges of window
+            if ((xBall + 2 * RADIUS >= WIDTH) || (xBall <= 0))
+                xVelocity *= -1;
+
+            // ball is below paddle, lose a life, pause game, and reposition ball
+            if (yBall + 2 * RADIUS >= HEIGHT)
+            {
+                lives--;
+                removeGWindow(window, ball);
+                ball = initBall(window);
+                game_paused = true;
             }
-        }   
+            // Bound off upper Horizontal edges 
+            if (yBall <= 0)
+                yVelocity *= -1;
+
+            // detect collision with paddle or a brick
+            GObject object = detectCollision(window, ball);
+            if (object != NULL) 
+            {
+                // collision with the paddle
+                if (object == paddle)
+                    yVelocity *= -1;
+                
+                // collision  with a brick
+                else if (strcmp(getType(object), "GRect") == 0)
+                {
+                    // bounce, remove the brick, and increment points
+                    yVelocity *= -1;
+                    removeGWindow(window, object);
+                    bricks--;
+                    points++;
+                }
+            }   
+            // pause to make mouse movement more realistic
+            pause(10);
+            // wait for event
+            GMouseEvent event = getNextEvent(MOUSE_EVENT);
+                                
+            // if we heard one
+            if (event != NULL)
+            {
+                // Control the paddle movement with the mouse
+                if (getEventType(event) == MOUSE_MOVED)
+                {
+                    double x = (getX(event) - PADDLE_WIDTH / 2) ;
+                    double y = getY(paddle) ;
+
+                    // Restrict the paddle movement to the game window
+                    if (x + PADDLE_WIDTH > WIDTH)
+                        x = WIDTH - PADDLE_WIDTH;
+                    else if (x < 0)
+                        x = 0;
+                    setLocation(paddle, x, y);
+                }
+            }   
+        }
 
     }
 
