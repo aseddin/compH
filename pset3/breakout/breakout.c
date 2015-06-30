@@ -30,6 +30,10 @@
 // radius of ball in pixels
 #define RADIUS 10
 
+// height and width of paddle in radius
+#define PADDLE_HEIGHT 10
+#define PADDLE_WIDTH 60
+
 // lives
 #define LIVES 3
 
@@ -106,8 +110,20 @@ GOval initBall(GWindow window)
  */
 GRect initPaddle(GWindow window)
 {
-    // TODO
-    return NULL;
+    // Align the paddle to bottom-middle of the game's window and
+    // elevate the paddle from the bottom by 5 times the paddle height
+    int xLocation = (WIDTH - PADDLE_WIDTH) / 2;
+    int yLocation = (HEIGHT - PADDLE_HEIGHT * 5) ;
+    
+    // Instantiate the paddle
+    GRect paddle = newGRect(xLocation, yLocation, PADDLE_WIDTH, PADDLE_HEIGHT);
+
+    // set paddle fill color
+    setFilled(paddle, true);
+    setColor(paddle, "BLACK");
+    add(window, paddle);
+
+    return paddle;
 }
 
 /**
