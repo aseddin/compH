@@ -136,6 +136,8 @@ int main(void)
                     removeGWindow(window, object);
                     bricks--;
                     points++;
+
+                    updateScoreboard(window, label, points);
                 }
             }   
             // pause to make mouse movement more realistic
@@ -263,8 +265,15 @@ GRect initPaddle(GWindow window)
  */
 GLabel initScoreboard(GWindow window)
 {
-    // TODO
-    return NULL;
+    GLabel label = newGLabel("0");
+    setFont(label, "SAnsSerif-46");
+    setColor(label, "LIGHT_GRAY");
+    // center label in window
+    double x = (getWidth(window) - getWidth(label)) / 2;
+    double y = (getHeight(window) - getHeight(label)) / 2;
+    setLocation(label, x, y);
+    add(window, label);
+    return label;
 }
 
 /**
