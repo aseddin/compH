@@ -223,8 +223,8 @@ void initBricks(GWindow window)
 GOval initBall(GWindow window)
 {
     // Compute default location
-    int wCenter = WIDTH / 2;
-    int hCenter = HEIGHT / 2;
+    int wCenter = WIDTH / 2 - RADIUS;
+    int hCenter = HEIGHT / 2 - RADIUS;
 
     GOval circle = newGOval(wCenter, hCenter, 2 * RADIUS, 2 * RADIUS);
 
