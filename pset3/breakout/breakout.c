@@ -78,6 +78,27 @@ int main(void)
     while (lives > 0 && bricks > 0)
     {
         // TODO
+        // wait for event
+        GEvent event = waitForEvent(ANY_EVENT);
+                            
+        // if we heard one
+        if (event != NULL)
+        {
+            // Control the paddle movement with the mouse
+            if (getEventType(event) == MOUSE_MOVED)
+            {
+                double x = (getX(event) - PADDLE_WIDTH / 2) ;
+                double y = getY(paddle) ;
+
+                // Restrict the paddle movement to the game window
+                if (x + PADDLE_WIDTH > WIDTH)
+                    x = WIDTH - PADDLE_WIDTH;
+                else if (x < 0)
+                    x = 0;
+                setLocation(paddle, x, y);
+            }
+        }   
+       
     }
 
     // wait for click before exiting
@@ -93,7 +114,44 @@ int main(void)
  */
 void initBricks(GWindow window)
 {
-    // TODO
+    // Define the colors to be used for each row
+    // Colors will repeat once all of them are used
+    char* colors[] = {"RED", "ORANGE", "YELLOW", "GREEN", "CYAN", "GRAY", "MAGENTA", "PINT"};
+
+    // Compute brick width and height based on the numbers of ROWS & COLS
+    const int BRICK_WIDTH = WIDTH / COLS - COLS / 2 ;
+    const int BRICK_HEIGHT = PADDLE_HEIGHT;
+
+    // Compute the white space between bricks
+    const int SHIFT = (WIDTH - COLS * BRICK_WIDTH)/ COLS ;
+
+    // Compute the Horizontal axis offset so the bricks grid is centered
+    const int XOFFSET = (WIDTH - COLS * (SHIFT + BRICK_WIDTH) + SHIFT) / 2;
+
+    // Define the Vertical axis offset so that bricks are not too high
+    const int YOFFSET = 50;
+
+    // 2D bricks array (Brick Grid)
+    GRect bricks[ROWS][COLS];
+
+    // Layout the bricks
+    for (int i = 0; i < ROWS; i++)
+    {
+        int yLocation = (BRICK_HEIGHT + SHIFT) * i + YOFFSET;
+
+        for (int j = 0; j < COLS; j++)
+        {
+            int xLocation = (BRICK_WIDTH + SHIFT) * j + XOFFSET;
+            bricks[i][j] = newGRect(xLocation, yLocation, BRICK_WIDTH, BRICK_HEIGHT); 
+                
+            // set brick fill color for row "i"
+            setFilled(bricks[i][j], true);
+            // modulus is used to repeat colors
+            setColor(bricks[i][j], colors[i % 7]);
+            add(window, bricks[i][j]);
+        }
+
+    }
 }
 
 /**
@@ -101,8 +159,19 @@ void initBricks(GWindow window)
  */
 GOval initBall(GWindow window)
 {
-    // TODO
-    return NULL;
+    // Compute default location
+    int wCenter = WIDTH / 2;
+    int hCenter = HEIGHT / 2;
+
+    GOval circle = newGOval(wCenter, hCenter, 2 * RADIUS, 2 * RADIUS);
+
+    // set ball color
+    setFilled(circle, true);
+    setColor(circle, "BLACK");
+
+    // Add circle to window
+    add(window, circle);
+    return circle;
 }
 
 /**
